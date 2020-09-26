@@ -11,7 +11,7 @@ var bird, slingshot;
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+  getBackground();
 }
 
 function setup(){
@@ -42,10 +42,15 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
+    //getTime();
 }
 
 function draw(){
-    background(backgroundImg);
+    
+    if(backgroundImg){       //only if backgroundImg exists
+        background(backgroundImg);
+    }
     Engine.update(engine);
     //strokeWeight(4);
     box1.display();
@@ -86,3 +91,50 @@ function keyPressed(){
        // slingshot.attach(bird.body);
     }
 }
+
+async function getBackground(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+
+    var responseJSON = await response.json();  //extract the data in JSON format
+    console.log(responseJSON);
+
+    var dt = responseJSON.datetime;
+    console.log(dt);
+
+    var hour = dt.slice(11, 13);
+    console.log(hour);
+
+    if(hour >= 06 && hour <= 19){
+        //day background
+        backgroundImg = loadImage("sprites/bg.png");
+    }
+    else{
+        //night background
+        backgroundImg = loadImage("sprites/bg2.jpg");
+    }
+}
+
+/*
+Arrays - data structure - holds multiple values
+- []
+
+JSON - JS Object Notation
+- created inside {..}
+- Multiple values of same or different data types
+- {Index_name: Index_value, Index_name2: Index_value2}
+- {Name: "Aryan", Age: 11, Class: "7th"}
+
+
+API - Application Program Interface
+API calls from a website - worltimeapi.org
+
+fetch() 
+    1. Sends a request to the website
+    2. Collect the response from the website
+
+await - makes JS wait for the statement to be completed
+
+-JS runs synchronously - keeps jumping to the next statement after another
+- await makes the specific asynchronous --> JS waits for some lines to be completed before jumping to the next
+
+*/
